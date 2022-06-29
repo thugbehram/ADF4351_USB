@@ -56,11 +56,11 @@ void MX_SPI1_Init(void)
   /* USER CODE END SPI1_Init 1 */
   SPI_InitStruct.TransferDirection = LL_SPI_FULL_DUPLEX;
   SPI_InitStruct.Mode = LL_SPI_MODE_MASTER;
-  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_8BIT;
+  SPI_InitStruct.DataWidth = LL_SPI_DATAWIDTH_16BIT;
   SPI_InitStruct.ClockPolarity = LL_SPI_POLARITY_LOW;
   SPI_InitStruct.ClockPhase = LL_SPI_PHASE_1EDGE;
   SPI_InitStruct.NSS = LL_SPI_NSS_HARD_OUTPUT;
-  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV64;
+  SPI_InitStruct.BaudRate = LL_SPI_BAUDRATEPRESCALER_DIV256;
   SPI_InitStruct.BitOrder = LL_SPI_MSB_FIRST;
   SPI_InitStruct.CRCCalculation = LL_SPI_CRCCALCULATION_DISABLE;
   SPI_InitStruct.CRCPoly = 10;
