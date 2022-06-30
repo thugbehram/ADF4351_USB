@@ -92,18 +92,17 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   sprintf(str_tx,"USB Transmit\r\n");
-  uint32_t ADF4351_REG[6] = {0x00500000, 0x08008011, 0x00010E42, 0x000004B3, 0x00AC803C, 0x00580005};
+  uint32_t ADF4351_REG[6] = {0x00330320, 0x080087D1, 0x60010F42, 0x000004B3, 0x00EC803C, 0x00580005};
 //  uint32_t REG0 = 0x500000;
 //  uint32_t REG1 = 0x8008011;
 //  uint32_t REG2 = 0x10E42;
 //  uint32_t REG3 = 0x4B3;
 //  uint32_t REG4 = 0xAC803C;
 //  uint32_t REG5 = 0x580005;
-
+  LL_mDelay(200);
   for (uint8_t i = 0; i<6; i++)
   {
-	  ADF4351_Write(ADF4351_REG[i]);
-	  LL_mDelay(1);
+	  ADF4351_Write(ADF4351_REG[5 - i]);
   }
   /* USER CODE END 2 */
 
@@ -171,23 +170,12 @@ void SystemClock_Config(void)
 uint16_t ADF4351_Write(uint32_t data)
 {
 	LL_SPI_Enable(SPI1);
-//	uint8_t reg[4] = {0};
 	uint16_t reg[2] = {0};
-//	for (uint8_t i = 0; i<4; i++)
-//	{
-//		reg[i] = (uint8_t)data;
-//		data = data >> 8;
-//	}
 	for (uint8_t i = 0; i<2; i++)
 	{
 		reg[i] = (uint16_t)data;
 		data = data >> 16;
 	}
-//	for (uint8_t i = 0; i<4; i++)
-//	{
-//		while (LL_SPI_IsActiveFlag_TXE(SPI1) != 1);
-//		LL_SPI_TransmitData8(SPI1, reg[3-i]);
-//	}
 	for (uint8_t i = 0; i<2; i++)
 	{
 		while (LL_SPI_IsActiveFlag_TXE(SPI1) != 1);
