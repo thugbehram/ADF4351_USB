@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,6 +47,8 @@
 /* USER CODE BEGIN PV */
 char str_tx[21];
 char str_rx[21];
+uint32_t input_data = 0;
+uint16_t check = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -53,6 +56,7 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
 uint16_t ADF4351_Write(uint32_t data);
+int8_t hexchar2int(char c);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -110,9 +114,25 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_Delay(500);
-      CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx));
-      LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+//	  HAL_Delay(500);
+//      CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx));
+//      LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	  if (RxStrLen > 0)
+	  {
+		  check = RxStrLen;
+		  input_data = 0;
+//		  uint16_t i = RxStrLen;
+		for (uint8_t i = 0; i<RxStrLen; i++)
+		{
+//			uint32_t poww = pow(0x10, RxStrLen-i-1);
+//			uint8_t buf = hexchar2int(UserRxBufferFS[i]);
+//			input_data += buf * poww;
+			input_data += hexchar2int(UserRxBufferFS[i]) * pow(0x10, RxStrLen-i-1);
+		}
+		RxStrLen = 0;
+		ADF4351_Write(input_data);
+		LL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -186,6 +206,16 @@ uint16_t ADF4351_Write(uint32_t data)
 	return 1;
 }
 
+int8_t hexchar2int(char c)
+{
+    if (c >= '0' && c <= '9')
+        return c - '0';
+    if (c >= 'A' && c <= 'F')
+        return c - 'A' + 10;
+    if (c >= 'a' && c <= 'f')
+        return c - 'a' + 10;
+    return 0;
+}
 /* USER CODE END 4 */
 
 /**
